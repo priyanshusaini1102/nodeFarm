@@ -1,9 +1,11 @@
 const fs = require('fs');
 const http = require('http');
 const url = require('url');
+const slugify = require('slugify');
 
 const putCard = require('./modules/putCard');
 
+//"slugify": "^1.6.5" : 1->denotes the major version, 6->denotes the minor version and 5->denotes the patch which is only for bug fixes.
 //TODO: clear confusion between './file_name' and `${__dirname/file_name}`
 
 // const textIn = fs.readFileSync('./txt/input.txt','utf-8');
@@ -29,7 +31,11 @@ const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.htm
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
 const list = JSON.parse(data);
 
+//make slugs array from list
+const slugs = list.map(item => slugify(item.productName,{ lower:true })); 
 
+//only to use package.
+console.log(slugs);
 
 //Replace all product data with template and join and save in overviewList variable.
 const overviewList = list.map((product, index) =>putCard(temp,product)).join('');
@@ -62,9 +68,9 @@ const server = http.createServer((req, res) => {
       }
 })
 
-const port = 8001;
+const port = 8080;
 
-server.listen(port,'127.0.0.1',()=> {
+server.listen(port,'localhost',()=> {
     console.log(`Server listening on http://localhost:${port}`);
 });
 
